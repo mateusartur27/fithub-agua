@@ -217,3 +217,67 @@ Como o diretório local do Windows possui caracteres especiais com acentos (`Des
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build_final.ps1
 ```
+
+---
+
+## 7. Como Configurar as Tabelas no Painel do Supabase (Passo a Passo)
+
+Caso as tabelas `fithub_agua_records` e `fithub_agua_reminders` ainda não apareçam criadas no seu painel online do Supabase, você pode criá-las em menos de 10 segundos seguindo estes passos simples:
+
+1. Acesse o painel do seu projeto no Supabase: [ayvbtydubxcpevcxcoul](https://supabase.com/dashboard/project/ayvbtydubxcpevcxcoul)
+2. No menu lateral esquerdo, clique no ícone do **SQL Editor** (um ícone de terminal com o símbolo `>_`).
+3. Clique no botão **"New query"** (Nova consulta) no topo.
+4. Cole o seguinte código SQL na caixa de texto:
+
+```sql
+-- Criando tabelas vinculadas ao ecossistema AHUB para o app de Hidratação
+
+CREATE TABLE IF NOT EXISTS public.fithub_agua_records (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID NOT NULL, -- FK referenciando a tabela de auth/users central do AHUB
+    amount_ml INTEGER NOT NULL,
+    recorded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.fithub_agua_reminders (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID NOT NULL,
+    interval_minutes INTEGER NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Habilitando RLS (Row Level Security) para segurança dos dados
+ALTER TABLE public.fithub_agua_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.fithub_agua_reminders ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para fithub_agua_records
+CREATE POLICY "Users can insert their own records"
+ON public.fithub_agua_records FOR INSERT
+TO authenticated
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can view their own records"
+ON public.fithub_agua_records FOR SELECT
+TO authenticated
+USING (auth.uid() = user_id);
+
+-- Políticas para fithub_agua_reminders
+CREATE POLICY "Users can insert their own reminders"
+ON public.fithub_agua_reminders FOR INSERT
+TO authenticated
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can view their own reminders"
+ON public.fithub_agua_reminders FOR SELECT
+TO authenticated
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own reminders"
+ON public.fithub_agua_reminders FOR UPDATE
+TO authenticated
+USING (auth.uid() = user_id);
+```
+
+5. Clique no botão azul **Run** (Executar) no canto inferior direito da tela.
+6. **Pronto!** As tabelas e as regras de segurança serão criadas instantaneamente e o seu app funcionará em total harmonia e sincronia com a nuvem!
