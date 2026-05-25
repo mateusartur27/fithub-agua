@@ -887,6 +887,97 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
+  void _showAddWaterDialog() {
+    final textController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: AlertDialog(
+            backgroundColor: const Color(0xFF1E1B4B).withOpacity(0.9),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(color: Colors.white.withOpacity(0.1)),
+            ),
+            title: Row(
+              children: [
+                const Icon(Icons.water_drop, color: Color(0xFF38BDF8)),
+                const SizedBox(width: 8),
+                Text(
+                  'Adicionar Água',
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Digite a quantidade consumida:',
+                  style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: textController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  decoration: InputDecoration(
+                    hintText: 'Ex: 250 ml',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                    suffixText: 'ml',
+                    suffixStyle: const TextStyle(color: Color(0xFF38BDF8)),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.05),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Color(0xFF38BDF8)),
+                    ),
+                  ),
+                  autofocus: true,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  'CANCELAR',
+                  style: TextStyle(color: Colors.white.withOpacity(0.6), fontWeight: FontWeight.bold),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF38BDF8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {
+                  final val = int.tryParse(textController.text.trim());
+                  if (val != null && val > 0) {
+                    context.read<HydrationState>().addWater(val);
+                    Navigator.pop(ctx);
+                  }
+                },
+                child: const Text(
+                  'ADICIONAR',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<HydrationState>();
@@ -961,26 +1052,30 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                         color: Colors.white.withOpacity(0.6),
                                         fontSize: 14)),
                                 const SizedBox(height: 4),
-                                Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: [
-                                    Text('${state.currentMl}',
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 38,
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                        state.goalMl > 0
-                                            ? '/ ${state.goalMl} ml'
-                                            : ' ml',
-                                        style: TextStyle(
-                                            color:
-                                                Colors.white.withOpacity(0.6),
-                                            fontSize: 16)),
-                                  ],
+                                GestureDetector(
+                                  onTap: _showAddWaterDialog,
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    children: [
+                                      Text('${state.currentMl}',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 38,
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                          state.goalMl > 0
+                                              ? '/ ${state.goalMl} ml'
+                                              : ' ml',
+                                          style: TextStyle(
+                                              color:
+                                                  Colors.white.withOpacity(0.6),
+                                              fontSize: 16)),
+                                    ],
+                                  ),
                                 ),
                                 if (state.goalMl > 0) ...[
                                   const SizedBox(height: 10),
@@ -1071,7 +1166,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                               },
                               decoration: InputDecoration(
                                 hintText: _isListening
-                                    ? '🎙 Ouvindo...'
+                                    ? 'Ouvindo...'
                                     : 'Escreva uma mensagem...',
                                 hintStyle: TextStyle(
                                     color: Colors.white.withOpacity(0.4)),

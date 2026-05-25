@@ -1,7 +1,7 @@
 # Documentação Técnica Final: FitHub Água
 
 **Ecossistema:** FitHub - Ecossistema de Aplicativos Fitness  
-**Desenvolvedor:** Mateus Artur Santos
+**Desenvolvedor:** Mateus Artur Santos  
 **Área de Atuação:** Hidratação Inteligente com Assistente de IA  
 **Versão:** 1.0.0 (Release Final)
 
@@ -224,7 +224,7 @@ powershell -ExecutionPolicy Bypass -File .\build_final.ps1
 
 Caso as tabelas `fithub_agua_records` e `fithub_agua_reminders` ainda não apareçam criadas no seu painel online do Supabase, você pode criá-las em menos de 10 segundos seguindo estes passos simples:
 
-1. Acesse o painel do seu projeto no Supabase: [ayvbtydubxcpevcxcoul](https://supabase.com/dashboard/project/ayvbtydubxcpevcxcoul)
+1. Acesse o painel do seu projeto no Supabase.
 2. No menu lateral esquerdo, clique no ícone do **SQL Editor** (um ícone de terminal com o símbolo `>_`).
 3. Clique no botão **"New query"** (Nova consulta) no topo.
 4. Cole o seguinte código SQL na caixa de texto:
