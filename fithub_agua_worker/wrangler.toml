@@ -1,0 +1,6 @@
+name = "fithub-agua-api"
+main = "src/index.js"
+compatibility_date = "2024-05-15"
+
+# Você precisará configurar a GEMINI_API_KEY no Cloudflare usando:
+# npx wrangler secret put GEMINI_API_KEY
