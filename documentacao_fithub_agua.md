@@ -40,7 +40,7 @@ O FitHub Água foi projetado sob o princípio de **Offline-First**, permitindo q
 graph TD
     A[Aplicativo Flutter] -->|Carregamento Instantâneo| B[Cache Local: SharedPreferences]
     A -->|Sincronização em Background| C[Supabase Cloud Database]
-    A -->|Requisição de Texto/Voz| D[Servidor Proxy Node.js]
+    A -->|Requisição de Texto/Voz| D[Proxy Serverless: Cloudflare Workers]
     D -->|Processamento de Linguagem Natural| E[Google Gemini API]
 ```
 
@@ -83,6 +83,14 @@ create table public.fithub_agua_reminders (
   * Quando o timer interno do aplicativo ou os alarmes do sistema operacional (`Android AlarmManager`) despertam, o aplicativo seleciona aleatoriamente um desses templates e exibe diretamente como balão no chat ou como notificação push na barra do celular.
   * **Resultado:** O sistema de lembretes funciona **100% offline**, possui **custo zero de requisições de API** e responde com estabilidade máxima de segundo plano.
 
+### Hospedagem e Segurança do Servidor Proxy (Cloudflare Workers)
+* **Onde o servidor intermediário está hospedado:**
+  * O servidor proxy que recebe as requisições do chat e as encaminha para a Inteligência Artificial está hospedado de forma **100% Serverless no Cloudflare Workers** (código localizado na pasta `/fithub_agua_worker`).
+* **Por que Cloudflare Workers?**
+  1. **Segurança Absoluta:** A chave privada da API da Inteligência Artificial (`GEMINI_API_KEY`) nunca é incluída ou exposta dentro do APK do aplicativo de celular (o que permitiria a clonagem e roubo da chave por engenharia reversa). Ela fica criptografada de forma segura nas variáveis de ambiente da Cloudflare.
+  2. **Computação na Borda (Edge Computing):** A Cloudflare executa as chamadas diretamente da borda de sua rede global distribuída, fisicamente muito próxima ao celular do usuário. Isso resulta em latência ultrabaixa e **tempo de inicialização de 0ms (zero Cold Starts)**.
+  3. **Custo Operacional Zero:** O proxy roda na modalidade gratuita do Cloudflare Workers, suportando até **100.000 requisições diárias totalmente grátis**, garantindo infraestrutura robusta sem custo financeiro.
+
 ---
 
 ## 3. Padrão Arquitetural (MVVM)
@@ -105,7 +113,7 @@ O aplicativo foi estruturado utilizando o padrão de arquitetura **MVVM (Model-V
 * **Gerenciador de Estado:** `ChangeNotifierProvider` (Provider) para manter o estado unificado reativo na UI.
 * **Autenticação:** Supabase Auth (fluxos integrados de Login, Registro de Conta e Validação de Sessão ativa).
 * **Base de Dados:** Supabase Database (PostgreSQL) com persistência assíncrona.
-* **Processamento de IA:** Google Gemini API integrando o modelo leve e ágil `gemini-1.5-flash` protegido por um proxy Express (Node.js).
+* **Processamento de IA:** Google Gemini API integrando o modelo leve e ágil `gemini-1.5-flash` protegido por um proxy Serverless hospedado no **Cloudflare Workers**.
 * **Nativos (Android / iOS):**
   * `speech_to_text` (Microfone nativo para captação de voz).
   * `flutter_local_notifications` (Notificações locais de alta prioridade).
