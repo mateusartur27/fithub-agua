@@ -17,7 +17,7 @@ O **FitHub Água** é um assistente pessoal de hidratação premium baseado em *
    * **Contagem Livre Além da Meta:** O volume diário bebido (`currentMl`) acumula de forma contínua e pode ultrapassar a meta (`goalMl`) com precisão (ex: `2500 / 2000 ml`), enquanto os indicadores circulares e lineares de progresso se mantêm em 100%.
    * **Reset Diário Automático:** O consumo zera instantaneamente para `0 ml` às 00:00h do novo dia (mesmo que o celular esteja offline), baseado em um cache de data inteligente.
 3. **Microfone Inteligente com Conversão de Voz (Speech-to-Text):** Permite interagir sem digitar. O controle do microfone possui regras rígidas de UX:
-   * Clicar no botão do microfone inicia a escuta (o botão fica azul brilhante).
+   * Clicar no botão do microfone inicia a escuta.
    * Clicar novamente no microfone apenas **para de captar** o áudio, **sem enviar** a mensagem incompleta.
    * Começar a digitar texto no teclado ou apagar caracteres desativa o microfone automaticamente e libera a captação.
 4. **Sistema Inteligente de Notificações Locais (Zoned Exact Alarms):**
