@@ -1,0 +1,23 @@
+# Flutter/Dart build files
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.packages
+**/Generated.xcconfig
+**/flutter_export_environment.sh
+
+# Node.js dependencies
+**/node_modules/
+**/.env
+
+# Compiled APKs and binaries
+*.apk
+*.zip
+*.tar.gz
+
+# System Files
+.DS_Store
+Thumbs.db
+*.log
