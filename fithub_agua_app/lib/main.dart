@@ -18,6 +18,14 @@ const String _supabaseAnonKey =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5dmJ0eWR1YnhjcGV2Y3hjb3VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1NDA2MDQsImV4cCI6MjA4NzExNjYwNH0.iSz583cI1f1Zs9IUJOi3pBHzlIcasYICwmm3aalHdLw';
 const String _workerUrl = 'https://fithub-agua-api.mateus2002ns.workers.dev';
 
+const List<String> _hydrationPhrases = [
+  "Hora do seu gole de saúde! Que tal um copo de água agora? 💧",
+  "Passando para lembrar da sua hidratação. Seu corpo agradece! 💧",
+  "Não se esqueça de beber água! Vamos manter o ritmo? 💧",
+  "Um gole de água agora vai te dar mais energia. Que tal? 💧",
+  "Sua meta está te esperando! Vamos beber mais um copo? 💧",
+];
+
 // ─────────────────────────────────────────────
 // NOTIFICATION SERVICE
 // ─────────────────────────────────────────────
@@ -72,7 +80,7 @@ class NotificationService {
       await _notificationsPlugin.zonedSchedule(
         id: i, // IDs 1 a 5
         title: 'Hora de beber água! 💧',
-        body: 'Seu corpo agradece! Vamos beber um copo d\'água para manter a hidratação e a saúde lá no alto?',
+        body: _hydrationPhrases[(i - 1) % _hydrationPhrases.length],
         scheduledDate: scheduleTime,
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -204,15 +212,10 @@ class HydrationState extends ChangeNotifier {
       final elapsedMinutes = DateTime.now().difference(lastInteraction).inMinutes;
       if (reminderIntervalMinutes > 0 && elapsedMinutes >= reminderIntervalMinutes) {
         final missedCount = (elapsedMinutes ~/ reminderIntervalMinutes).clamp(1, 3);
-        final List<String> phrases = [
-          "Hora do seu gole de saúde! Que tal um copo de água agora? 💧",
-          "Passando para lembrar da sua hidratação. Seu corpo agradece! 💧",
-          "Não se esqueça de beber água! Vamos manter o ritmo? 💧",
-        ];
         for (int i = 0; i < missedCount; i++) {
           chatHistory.add({
             "role": "model",
-            "text": phrases[i % phrases.length],
+            "text": _hydrationPhrases[i % _hydrationPhrases.length],
           });
         }
         await prefs.setString('${userId}_chatHistory', jsonEncode(chatHistory));
@@ -419,14 +422,7 @@ class HydrationState extends ChangeNotifier {
     isTyping = true;
     notifyListeners();
 
-    final List<String> phrases = [
-      "Hora do seu gole de saúde! Que tal um copo de água agora? 💧",
-      "Passando para lembrar da sua hidratação. Seu corpo agradece! 💧",
-      "Não se esqueça de beber água! Vamos manter o ritmo? 💧",
-      "Um gole de água agora vai te dar mais energia. Que tal? 💧",
-      "Sua meta está te esperando! Vamos beber mais um copo? 💧",
-    ];
-    final randomPhrase = phrases[DateTime.now().millisecond % phrases.length];
+    final randomPhrase = _hydrationPhrases[DateTime.now().millisecond % _hydrationPhrases.length];
 
     chatHistory.add({"role": "model", "text": randomPhrase});
     isTyping = false;
