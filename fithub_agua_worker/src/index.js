@@ -40,7 +40,7 @@ export default {
       const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
       
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: systemInstruction,
         generationConfig: { responseMimeType: "application/json" }
       });

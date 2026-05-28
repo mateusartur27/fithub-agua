@@ -228,7 +228,8 @@ class HydrationState extends ChangeNotifier {
     NotificationService.scheduleReminder(reminderIntervalMinutes);
 
     // 2. Agora, busca atualizações mais recentes do Supabase em segundo plano!
-    _syncWithSupabaseInBackground(userId);
+    // Desativado a pedido do usuario para que ao reinstalar o app inicie do zero:
+    // _syncWithSupabaseInBackground(userId);
   }
 
   Future<void> _syncWithSupabaseInBackground(String userId) async {
